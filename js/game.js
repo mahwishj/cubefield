@@ -9,8 +9,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-// Testing with 10 cubes
-var numCubes = 10;
+// Testing with 20 cubes
+var numCubes = 20;
 var cubeArr = [];
 
 for(var i = 0; i < numCubes; i++){
