@@ -1,7 +1,7 @@
 const fillMaterials = [
-    new THREE.MeshBasicMaterial( { color: 0xb9976e } ),
-    new THREE.MeshBasicMaterial( { color: 0x382118 } ),
-    new THREE.MeshBasicMaterial( { color: 0x613c27 } )
+    new THREE.MeshBasicMaterial( { color: 0x264e86 } ),
+    new THREE.MeshBasicMaterial( { color: 0x5e88fc } ),
+    new THREE.MeshBasicMaterial( { color: 0x74dbef } )
 ]
 const edgeMaterial = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 2 } );
 
