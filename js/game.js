@@ -19,8 +19,12 @@ for(var i = 0; i < numCubes; i++){
 
 camera.position.y = 2;
 
-
+var menu = document.getElementById("menu");
+var score = document.getElementById('score');
+score.innerHTML='High Score: 0';
 const animate = function () {
+	
+	menu.style.visibility = 'hidden';
 	requestAnimationFrame( animate );
     // CUBE MOVES CLOSER  
 	for(var i = 0; i < numCubes; i++){
@@ -30,5 +34,7 @@ const animate = function () {
 	renderer.render( scene, camera );
 };
 
-animate();
+//animate();
+
+document.getElementById("startGameButton").addEventListener("click", animate);
 
