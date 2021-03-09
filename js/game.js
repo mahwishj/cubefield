@@ -20,7 +20,7 @@ for(var i = 0; i < numCubes; i++){
 camera.position.y = 2;
 
 var menu = document.getElementById("menu");
-var score = document.getElementById('score');
+var score = document.getElementById('highscore');
 score.innerHTML='High Score: 0';
 const animate = function () {
 	
