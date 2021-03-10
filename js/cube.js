@@ -20,8 +20,6 @@ class Cube{
         
         //random z position (-20 to -30)
         this.cube.position.z = Math.floor(Math.random() * -30) - 25; 
-        console.log(this.cube.position.x);
-        console.log(this.cube.position.z);
         scene.add(this.cube);
     }
 }
