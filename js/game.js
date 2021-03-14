@@ -55,9 +55,22 @@ const animate = function () {
 			}
 	}
 
+	// CUBES MOVE SIDE TO SIDE
+	if(leftPressed){
+		for(var i = 0; i < numCubes; i++){
+			cubeArr[i].cube.position.x += 0.50;
+		}
+	}
+	else if(rightPressed){
+		for(var i = 0; i < numCubes; i++){
+			cubeArr[i].cube.position.x -= 0.50;
+		}
+	}
+
+	// CAMERA TILT
 	if(leftPressed && camera.rotation.z < .10){
 		camera.rotation.z += .01;
-		straight = false;
+		straight = false;	
 	}
 	else if(rightPressed && camera.rotation.z > -.10){
 		camera.rotation.z -= .01;
