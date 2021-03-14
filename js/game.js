@@ -19,6 +19,42 @@ plane.rotation.x += -0.5 * Math.PI;
 
 scene.add(plane);
 
+
+// Initialize arrow
+const arrowGeo = new THREE.BufferGeometry();
+const points = [
+    new THREE.Vector3(0, 0.06, 0.20),//c
+    new THREE.Vector3(0.17, 0.000,  0.40),//b
+    new THREE.Vector3(-0.17, 0.000,  0.40),//a   
+
+    new THREE.Vector3(-0.17, 0.000,  0.40),//a    
+    new THREE.Vector3( 0.000, 0.000, -0.150),//d  
+    new THREE.Vector3(0, 0.06, 0.20),//c
+
+    new THREE.Vector3(0.17, 0.000,  0.40),//b
+    new THREE.Vector3( 0.000, 0.000, -0.150),//d  
+    new THREE.Vector3(-0.17, 0.000,  0.40),//a
+
+    new THREE.Vector3(0, 0.06, 0.20),//c
+    new THREE.Vector3( 0.000, 0.000, -0.150),//d    
+    new THREE.Vector3(0.17, 0.000,  0.40),//b
+]
+
+arrowGeo.setFromPoints(points);
+arrowGeo.computeVertexNormals();
+
+var arrow = new THREE.Mesh(arrowGeo,  new THREE.MeshBasicMaterial({color: 0x897afa}));
+const arrowEdgeGeo = new THREE.EdgesGeometry( arrowGeo );
+const arrowEdgeMaterial = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 2 } );
+arrow.add( new THREE.LineSegments( arrowEdgeGeo, arrowEdgeMaterial ) );
+
+
+arrow.position.y=-0.5;
+arrow.position.z=-5;
+
+
+scene.add(arrow);
+
 // Testing with 20 cubes
 var numCubes = 20;
 var cubeArr = [];
@@ -46,12 +82,21 @@ const animate = function () {
 		straight = true;
 	}
 
+	// restraighten camera
 	if(!straight && !leftPressed && !rightPressed){
 			if(camera.rotation.z > 0){
 				camera.rotation.z -= .005;
 			}
 			else if(camera.rotation.z < 0){
 				camera.rotation.z += .005;
+				
+			}
+
+			if(arrow.rotation.y>0){
+				arrow.rotation.y -= 0.005;
+
+			}else if(arrow.rotation.y<0){
+				arrow.rotation.y += 0.005;
 			}
 	}
 
@@ -68,12 +113,26 @@ const animate = function () {
 	}
 
 	// CAMERA TILT
-	if(leftPressed && camera.rotation.z < .10){
-		camera.rotation.z += .01;
+	if(leftPressed){
+
+		if(camera.rotation.z < .10){
+			camera.rotation.z += .01;
+		}
+
+		if(arrow.rotation.y<0.2){
+			arrow.rotation.y += 0.03;
+		}
+		
 		straight = false;	
 	}
-	else if(rightPressed && camera.rotation.z > -.10){
-		camera.rotation.z -= .01;
+	else if(rightPressed){
+		if(camera.rotation.z > -.10){ 
+			camera.rotation.z -= .01;
+		}
+		
+		if(arrow.rotation.y>-0.2){
+			arrow.rotation.y -= 0.03;
+		}
 		straight = false;
 	}
 
