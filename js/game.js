@@ -78,14 +78,11 @@ document.getElementById("startGameButton").addEventListener("click", animate);
 // KEY EVENT LISTENERS
 document.onkeydown = function(event) {
 	if(event.keyCode == '37'){
-		if(!rightPressed){
-			leftPressed = true;
-		}
+		leftPressed = true;
+
 	}
 	if(event.keyCode == '39'){
-		if(!leftPressed){
-			rightPressed = true;
-		}
+		rightPressed = true;
 	}
 }
 
