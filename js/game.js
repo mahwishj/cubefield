@@ -15,7 +15,7 @@ const planeGeo = new THREE.PlaneGeometry( 300, 75, 20 );
 var plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ color: 0xe0dfda }));
 plane.receiveShadow = true;
 plane.rotation.x += -0.5 * Math.PI;
-	plane.position.y = -0.7;
+plane.position.y = -0.7;
 
 scene.add(plane);
 
@@ -56,7 +56,7 @@ arrow.position.z=-5;
 scene.add(arrow);
 
 // Testing with 20 cubes
-var numCubes = 20;
+var numCubes = 100;
 var cubeArr = [];
 
 var leftPressed = false;
@@ -74,6 +74,7 @@ camera.position.y = 2;
 var menu = document.getElementById("menu");
 var score = document.getElementById('highscore');
 score.innerHTML='High Score: 0';
+
 
 const animate = function () {
 	
@@ -150,7 +151,12 @@ const animate = function () {
 
     // CUBE MOVES CLOSER  
 	for(var i = 0; i < numCubes; i++){
-		cubeArr[i].cube.position.z += 0.10;
+		cubeArr[i].cube.position.z += 0.20;
+
+		// Once past the screen, regenerate cube in distance
+		if(cubeArr[i].cube.position.z > arrow.position.z + 3){
+			cubeArr[i].regenerate();
+		}
 	}
 
 	renderer.render( scene, camera );

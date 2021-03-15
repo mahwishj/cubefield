@@ -16,10 +16,18 @@ class Cube{
         this.cube.add( new THREE.LineSegments( edgeGeo, edgeMaterial ) );
 
         //random x position (-36 to 36)
-        this.cube.position.x = Math.floor(Math.random() * 72) - 36;
+        this.cube.position.x = Math.floor(Math.random() * 201) - 100;
         
         //random z position (-20 to -30)
-        this.cube.position.z = Math.floor(Math.random() * -30) - 25; 
+        //this.cube.position.z = Math.floor(Math.random() * -30) - 25; 
+        this.cube.position.z = (Math.floor(Math.random() * 50) + 25) * -1; 
         scene.add(this.cube);
+    }
+
+    // UPDATES CUBES POSITION WITH A RANDOM X AND Z
+    regenerate(){
+        this.cube.position.x = Math.floor(Math.random() * 201) - 100;
+        this.cube.position.z = (Math.floor(Math.random() * 50) + 25) * -1; 
+        return true;;
     }
 }
