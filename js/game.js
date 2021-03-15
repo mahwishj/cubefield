@@ -11,7 +11,7 @@ document.body.appendChild( renderer.domElement );
 
 
 // Initialize plane
-const planeGeo = new THREE.PlaneGeometry( 300, 75, 20 );
+const planeGeo = new THREE.PlaneGeometry( 300, 85, 20 );
 var plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ color: 0xe0dfda }));
 plane.receiveShadow = true;
 plane.rotation.x += -0.5 * Math.PI;
