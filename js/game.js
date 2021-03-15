@@ -61,7 +61,9 @@ var cubeArr = [];
 
 var leftPressed = false;
 var rightPressed = false;
-var straight = true;
+var cameraStraight = true;
+
+var arrowStraight = true;
 
 for(var i = 0; i < numCubes; i++){
 	cubeArr[i] = new Cube(scene);
@@ -79,11 +81,15 @@ const animate = function () {
 	requestAnimationFrame( animate );
 
 	if(camera.rotation.z > -0.001 && camera.rotation.z < 0.001){
-		straight = true;
+		cameraStraight = true;
+	}
+
+	if(arrow.rotation.y > -0.001 && arrow.rotation.y < 0.001){
+		arrowStraight = true;
 	}
 
 	// restraighten camera
-	if(!straight && !leftPressed && !rightPressed){
+	if(!cameraStraight && !leftPressed && !rightPressed){
 			if(camera.rotation.z > 0){
 				camera.rotation.z -= .005;
 			}
@@ -92,14 +98,18 @@ const animate = function () {
 				
 			}
 
-			if(arrow.rotation.y>0){
-				arrow.rotation.y -= 0.005;
 
-			}else if(arrow.rotation.y<0){
-				arrow.rotation.y += 0.005;
-			}
 	}
+	// restraighten arrow
+	if(!arrowStraight && !leftPressed && !rightPressed){
+		if(arrow.rotation.y>0){
+			arrow.rotation.y -= 0.020;
+		}else if(arrow.rotation.y<0){
+			arrow.rotation.y += 0.020;
+		}
 
+	}
+		
 	// CUBES MOVE SIDE TO SIDE
 	if(leftPressed){
 		for(var i = 0; i < numCubes; i++){
@@ -123,7 +133,8 @@ const animate = function () {
 			arrow.rotation.y += 0.03;
 		}
 		
-		straight = false;	
+		cameraStraight = false;	
+		arrowStraight = false;
 	}
 	else if(rightPressed){
 		if(camera.rotation.z > -.10){ 
@@ -133,7 +144,8 @@ const animate = function () {
 		if(arrow.rotation.y>-0.2){
 			arrow.rotation.y -= 0.03;
 		}
-		straight = false;
+		cameraStraight = false;
+		arrowStraight = false;
 	}
 
     // CUBE MOVES CLOSER  
