@@ -65,9 +65,15 @@ var cameraStraight = true;
 
 var arrowStraight = true;
 
+var collidableObjects = [];
+
+// creat cubes and populate collidableObjects
 for(var i = 0; i < numCubes; i++){
 	cubeArr[i] = new Cube(scene);
 }
+
+collidableObjects.push(arrow);
+
 
 camera.position.y = 2;
 
@@ -150,7 +156,25 @@ const animate = function () {
 
     // CUBE MOVES CLOSER  
 	for(var i = 0; i < numCubes; i++){
-		cubeArr[i].cube.position.z += 0.10;
+		var curCube = cubeArr[i].cube;
+		curCube.position.z += 0.10;
+
+		var cube_bbox = new THREE.Box3();
+		cube_bbox.setFromObject( curCube );
+
+		// cube_height = cube_bbox.max.y - cube_bbox.min.y;
+		// cube_width = cube_bbox.max.x - cube_bbox.min.x;
+		// cube_depth = cube_height = cube_bbox.max.z - cube_bbox.min.z;
+		
+		// console.log(cube_height, cube_width, cube_depth);
+
+		if(arrow.position.y<=cube_bbox.max.y && arrow.position.y>=cube_bbox.min.y && 
+			arrow.position.x<=cube_bbox.max.x && arrow.position.x>=cube_bbox.min.x &&
+			arrow.position.z<=cube_bbox.max.z && arrow.position.z>=cube_bbox.min.z 
+			){
+				alert('Collision!');
+			}
+	
 	}
 
 	renderer.render( scene, camera );
