@@ -5,6 +5,9 @@ var renderer;
 var planeGeo;
 var plane;
 var arrow;
+var currScore = 0;
+var highScore = currScore;
+var timer;
 
 
 // Testing with 20 cubes
@@ -89,7 +92,9 @@ var gameOver = false;
 
 var menu = document.getElementById("menu");
 var score = document.getElementById('highscore');
-score.innerHTML='High Score: 0';
+var currScoreDisplay = document.getElementById('currentscore');
+currScoreDisplay.style.visibility = 'hidden';
+score.innerHTML='High Score: ' + highScore;
 
 ///////////////////////////////////////////////////////////////////
 const initialize = function () {
@@ -101,6 +106,9 @@ const initialize = function () {
 		scene.add((cubeArr[i]).cube);
 	}
 
+	currScore = 0;
+	currScoreDisplay.style.visibility = 'visible';
+	timer = setInterval(keepScore, 1000);
 	animate();
 }
 
@@ -199,6 +207,7 @@ const animate = function () {
 
 		if(collisionCheck(curCube)){
 			gameOver = true;
+			clearInterval(timer);
 			break;	
 		}
 
@@ -220,8 +229,14 @@ const animate = function () {
 	renderer.render( scene, camera );
 	if(gameOver){
 		//console.log('Game over')
+		highScore = Math.max(currScore, highScore);
+		currScoreDisplay.style.visibility = 'hidden';
 		menu.style.visibility = 'visible';
+		score.innerHTML='High Score: ' + highScore;
+
 		gameOver=false;
+		currScore = 0;
+		currScoreDisplay.textContent = currScore;
 		cancelAnimationFrame(req);
 		return;
 	}
@@ -229,6 +244,12 @@ const animate = function () {
 
 
 document.getElementById("startGameButton").addEventListener("click", initialize);
+
+function keepScore() {
+	currScore++;
+	currScoreDisplay.textContent = currScore;
+
+}
 
 // KEY EVENT LISTENERS
 document.onkeydown = function(event) {
