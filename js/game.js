@@ -1,8 +1,20 @@
 // SET UP SCENE, CAMERA, RENDERER
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+var scene;
+var camera;
+var renderer;
+var planeGeo;
+var plane;
+var arrow;
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); //alpha = white??
+
+// Testing with 20 cubes
+var numCubes = 100;
+var cubeArr = [];
+
+scene = new THREE.Scene();
+camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); //alpha = white??
 // renderer.setClearColor(0xffffff, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -11,53 +23,58 @@ document.body.appendChild( renderer.domElement );
 
 
 // Initialize plane
-const planeGeo = new THREE.PlaneGeometry( 300, 85, 20 );
-var plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ color: 0xe0dfda }));
+planeGeo = new THREE.PlaneGeometry( 300, 85, 20 );
+plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ color: 0xe0dfda }));
 plane.receiveShadow = true;
 plane.rotation.x += -0.5 * Math.PI;
-plane.position.y = -0.7;
+	plane.position.y = -0.7;
 
-scene.add(plane);
+
 
 
 // Initialize arrow
 const arrowGeo = new THREE.BufferGeometry();
 const points = [
-    new THREE.Vector3(0, 0.06, 0.20),//c
-    new THREE.Vector3(0.17, 0.000,  0.40),//b
-    new THREE.Vector3(-0.17, 0.000,  0.40),//a   
+	new THREE.Vector3(0, 0.06, 0.20),//c
+	new THREE.Vector3(0.17, 0.000,  0.40),//b
+	new THREE.Vector3(-0.17, 0.000,  0.40),//a   
 
-    new THREE.Vector3(-0.17, 0.000,  0.40),//a    
-    new THREE.Vector3( 0.000, 0.000, -0.150),//d  
-    new THREE.Vector3(0, 0.06, 0.20),//c
+	new THREE.Vector3(-0.17, 0.000,  0.40),//a    
+	new THREE.Vector3( 0.000, 0.000, -0.150),//d  
+	new THREE.Vector3(0, 0.06, 0.20),//c
 
-    new THREE.Vector3(0.17, 0.000,  0.40),//b
-    new THREE.Vector3( 0.000, 0.000, -0.150),//d  
-    new THREE.Vector3(-0.17, 0.000,  0.40),//a
+	new THREE.Vector3(0.17, 0.000,  0.40),//b
+	new THREE.Vector3( 0.000, 0.000, -0.150),//d  
+	new THREE.Vector3(-0.17, 0.000,  0.40),//a
 
-    new THREE.Vector3(0, 0.06, 0.20),//c
-    new THREE.Vector3( 0.000, 0.000, -0.150),//d    
-    new THREE.Vector3(0.17, 0.000,  0.40),//b
+	new THREE.Vector3(0, 0.06, 0.20),//c
+	new THREE.Vector3( 0.000, 0.000, -0.150),//d    
+	new THREE.Vector3(0.17, 0.000,  0.40),//b
 ]
 
 arrowGeo.setFromPoints(points);
 arrowGeo.computeVertexNormals();
 
-var arrow = new THREE.Mesh(arrowGeo,  new THREE.MeshBasicMaterial({color: 0x897afa}));
+arrow = new THREE.Mesh(arrowGeo,  new THREE.MeshBasicMaterial({color: 0x897afa}));
 const arrowEdgeGeo = new THREE.EdgesGeometry( arrowGeo );
 const arrowEdgeMaterial = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 2 } );
 arrow.add( new THREE.LineSegments( arrowEdgeGeo, arrowEdgeMaterial ) );
+
 
 
 arrow.position.y=-0.5;
 arrow.position.z=-5;
 
 
-scene.add(arrow);
 
-// Testing with 20 cubes
-var numCubes = 100;
-var cubeArr = [];
+
+// creat cubes
+for(var i = 0; i < numCubes; i++){
+	cubeArr[i] = new Cube(scene);
+	
+}
+
+camera.position.y = 2;	
 
 var leftPressed = false;
 var rightPressed = false;
@@ -65,21 +82,47 @@ var cameraStraight = true;
 
 var arrowStraight = true;
 
-for(var i = 0; i < numCubes; i++){
-	cubeArr[i] = new Cube(scene);
-}
+var collision = false;
+var gameOver = false;
 
-camera.position.y = 2;
+
 
 var menu = document.getElementById("menu");
 var score = document.getElementById('highscore');
 score.innerHTML='High Score: 0';
 
+///////////////////////////////////////////////////////////////////
+const initialize = function () {
+	scene.add(plane);
+	scene.add(arrow);
+
+	for(var i = 0; i < numCubes; i++){
+		(cubeArr[i]).regenerate();
+		scene.add((cubeArr[i]).cube);
+	}
+
+	animate();
+}
+
+
+function collisionCheck(curCube){
+	var cube_bbox = new THREE.Box3();
+	cube_bbox.setFromObject( curCube );
+
+	if(arrow.position.y<=cube_bbox.max.y && arrow.position.y>=cube_bbox.min.y && 
+		arrow.position.x<=cube_bbox.max.x && arrow.position.x>=cube_bbox.min.x &&
+		arrow.position.z<=(cube_bbox.max.z) && arrow.position.z>=(cube_bbox.min.z)
+		){
+			return true;	
+		}
+	return false;
+}
+
 
 const animate = function () {
 	
 	menu.style.visibility = 'hidden';
-	requestAnimationFrame( animate );
+	var req = requestAnimationFrame( animate );
 
 	if(camera.rotation.z > -0.001 && camera.rotation.z < 0.001){
 		cameraStraight = true;
@@ -151,7 +194,13 @@ const animate = function () {
 
     // CUBE MOVES CLOSER  
 	for(var i = 0; i < numCubes; i++){
-		cubeArr[i].cube.position.z += 0.20;
+		var curCube = cubeArr[i].cube;
+		curCube.position.z += 0.20;
+
+		if(collisionCheck(curCube)){
+			gameOver = true;
+			break;	
+		}
 
 		// Once past the screen, regenerate cube in distance
 		if(cubeArr[i].cube.position.z > arrow.position.z + 3){
@@ -159,11 +208,27 @@ const animate = function () {
 		}
 	}
 
+	
+	if(gameOver){
+
+		while(scene.children.length > 0){ 
+			scene.remove(scene.children[0]); 
+		}
+	
+	}
+
 	renderer.render( scene, camera );
+	if(gameOver){
+		//console.log('Game over')
+		menu.style.visibility = 'visible';
+		gameOver=false;
+		cancelAnimationFrame(req);
+		return;
+	}
 };
 
 
-document.getElementById("startGameButton").addEventListener("click", animate);
+document.getElementById("startGameButton").addEventListener("click", initialize);
 
 // KEY EVENT LISTENERS
 document.onkeydown = function(event) {
