@@ -92,9 +92,13 @@ var gameOver = false;
 
 var menu = document.getElementById("menu");
 var score = document.getElementById('highscore');
-var currScoreDisplay = document.getElementById('currentscore');
-currScoreDisplay.style.visibility = 'hidden';
 score.innerHTML='High Score: ' + highScore;
+
+var currScoreDisplay = document.getElementById('currentscore');
+currScoreDisplay.textContent = currScore;
+// Hide the curr score on the menu initially (only shows up after playing at least 1 game)
+currScoreDisplay.style.color = 'white';
+
 
 ///////////////////////////////////////////////////////////////////
 const initialize = function () {
@@ -106,9 +110,11 @@ const initialize = function () {
 		scene.add((cubeArr[i]).cube);
 	}
 
+	// initialize and show curr score
 	currScore = 0;
-	currScoreDisplay.style.visibility = 'visible';
-	timer = setInterval(keepScore, 1000);
+	currScoreDisplay.textContent = currScore;
+	currScoreDisplay.style.color = 'black';
+	timer = setInterval(keepScore, 1);
 	animate();
 }
 
@@ -130,6 +136,7 @@ function collisionCheck(curCube){
 const animate = function () {
 	
 	menu.style.visibility = 'hidden';
+	currScoreDisplay.style.visibility = 'visible';
 	var req = requestAnimationFrame( animate );
 
 	if(camera.rotation.z > -0.001 && camera.rotation.z < 0.001){
@@ -228,15 +235,14 @@ const animate = function () {
 
 	renderer.render( scene, camera );
 	if(gameOver){
-		//console.log('Game over')
+		// record high score, display current score on menu
 		highScore = Math.max(currScore, highScore);
-		currScoreDisplay.style.visibility = 'hidden';
+		currScoreDisplay.textContent = "Current Score: " + currScore;
+		
 		menu.style.visibility = 'visible';
 		score.innerHTML='High Score: ' + highScore;
 
 		gameOver=false;
-		currScore = 0;
-		currScoreDisplay.textContent = currScore;
 		cancelAnimationFrame(req);
 		return;
 	}
