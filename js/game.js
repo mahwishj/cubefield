@@ -8,6 +8,7 @@ var arrow;
 var currScore = 0;
 var highScore = currScore;
 var timer;
+var zSpeed = 1;
 
 
 // Testing with 20 cubes
@@ -27,7 +28,7 @@ document.body.appendChild( renderer.domElement );
 
 // Initialize plane
 planeGeo = new THREE.PlaneGeometry( 300, 85, 20 );
-plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ color: 0xe0dfda }));
+plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ color: 0xC8C8C8 }));
 plane.receiveShadow = true;
 plane.rotation.x += -0.5 * Math.PI;
 	plane.position.y = -0.7;
@@ -112,9 +113,11 @@ const initialize = function () {
 
 	// initialize and show curr score
 	currScore = 0;
+	zSpeed = 1;
 	currScoreDisplay.textContent = currScore;
 	currScoreDisplay.style.color = 'black';
 	timer = setInterval(keepScore, 1);
+	setInterval(increaseDifficulty, 4000);
 	animate();
 }
 
@@ -172,12 +175,12 @@ const animate = function () {
 	// CUBES MOVE SIDE TO SIDE
 	if(leftPressed){
 		for(var i = 0; i < numCubes; i++){
-			cubeArr[i].cube.position.x += 0.50;
+			cubeArr[i].cube.position.x += 0.30;
 		}
 	}
 	else if(rightPressed){
 		for(var i = 0; i < numCubes; i++){
-			cubeArr[i].cube.position.x -= 0.50;
+			cubeArr[i].cube.position.x -= 0.30;
 		}
 	}
 
@@ -210,7 +213,7 @@ const animate = function () {
     // CUBE MOVES CLOSER  
 	for(var i = 0; i < numCubes; i++){
 		var curCube = cubeArr[i].cube;
-		curCube.position.z += 0.20;
+		curCube.position.z += (0.20 * zSpeed);
 
 		if(collisionCheck(curCube)){
 			gameOver = true;
@@ -255,6 +258,10 @@ function keepScore() {
 	currScore++;
 	currScoreDisplay.textContent = currScore;
 
+}
+
+function increaseDifficulty() {
+	zSpeed += .01;
 }
 
 // KEY EVENT LISTENERS
