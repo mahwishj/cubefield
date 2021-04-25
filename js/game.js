@@ -9,6 +9,7 @@ var currScore = 0;
 var highScore = currScore;
 var timer;
 var zSpeed = 1;
+var alpha = false;
 
 
 // Testing with 20 cubes
@@ -19,6 +20,7 @@ scene = new THREE.Scene();
 camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); //alpha = white??
+
 // renderer.setClearColor(0xffffff, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -114,10 +116,11 @@ const initialize = function () {
 	// initialize and show curr score
 	currScore = 0;
 	zSpeed = 1;
+	alpha = false;
 	currScoreDisplay.textContent = currScore;
 	currScoreDisplay.style.color = 'black';
 	timer = setInterval(keepScore, 1);
-	setInterval(increaseDifficulty, 4000);
+	setInterval(increaseDifficulty, 500);
 	animate();
 }
 
@@ -227,12 +230,39 @@ const animate = function () {
 		}
 	}
 
+	// INVERTING COLORS
+	console.log(currScore);
+	if(currScore > 8000 && currScore < 16000){
+		if(!alpha){
+			scene.background = new THREE.Color( 0x000000 );
+			currScoreDisplay.style.color = 'white';
+			plane.color = "black";
+			plane.material.color.setHex( 0x000000 );
+			alpha = true;
+		}
+
+	}
+	else{
+		if(alpha){
+			scene.background = new THREE.Color( 0xffffff );
+			currScoreDisplay.style.color = "black";
+			plane.material.color.setHex( 0xC8C8C8 );
+			alpha = false;
+		}
+		
+	}
+	
+
 	
 	if(gameOver){
 
+		scene.background = new THREE.Color( 0xffffff );
+		currScoreDisplay.style.color = "black";
+		plane.material.color.setHex( 0xC8C8C8 );
 		while(scene.children.length > 0){ 
 			scene.remove(scene.children[0]); 
 		}
+		
 	
 	}
 
@@ -244,6 +274,9 @@ const animate = function () {
 		
 		menu.style.visibility = 'visible';
 		score.innerHTML='High Score: ' + highScore;
+
+		scene.background = new THREE.Color( 0xffffff );
+		currScoreDisplay.style.color = 'black';
 
 		gameOver=false;
 		cancelAnimationFrame(req);
