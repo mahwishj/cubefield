@@ -11,17 +11,15 @@ var timer;
 var zSpeed = 1;
 var alpha = false;
 
-
-// Testing with 20 cubes
 var numCubes = 100;
 var cubeArr = [];
 
 scene = new THREE.Scene();
 camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+camera.position.y = 2;	
 
-renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); //alpha = white??
+renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
 
-// renderer.setClearColor(0xffffff, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -33,9 +31,7 @@ planeGeo = new THREE.PlaneGeometry( 300, 85, 20 );
 plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ color: 0xC8C8C8 }));
 plane.receiveShadow = true;
 plane.rotation.x += -0.5 * Math.PI;
-	plane.position.y = -0.7;
-
-
+plane.position.y = -0.7;
 
 
 // Initialize arrow
@@ -66,31 +62,22 @@ const arrowEdgeGeo = new THREE.EdgesGeometry( arrowGeo );
 const arrowEdgeMaterial = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 2 } );
 arrow.add( new THREE.LineSegments( arrowEdgeGeo, arrowEdgeMaterial ) );
 
-
-
 arrow.position.y=-0.5;
 arrow.position.z=-5;
-
-
 
 
 // creat cubes
 for(var i = 0; i < numCubes; i++){
 	cubeArr[i] = new Cube(scene);
-	
 }
-
-camera.position.y = 2;	
 
 var leftPressed = false;
 var rightPressed = false;
 var cameraStraight = true;
-
 var arrowStraight = true;
 
 var collision = false;
 var gameOver = false;
-
 
 
 var menu = document.getElementById("menu");
@@ -99,11 +86,12 @@ score.innerHTML='High Score: ' + highScore;
 
 var currScoreDisplay = document.getElementById('currentscore');
 currScoreDisplay.textContent = currScore;
+
 // Hide the curr score on the menu initially (only shows up after playing at least 1 game)
 currScoreDisplay.style.color = 'white';
 
 
-///////////////////////////////////////////////////////////////////
+// initializes the game
 const initialize = function () {
 	scene.add(plane);
 	scene.add(arrow);
@@ -117,14 +105,20 @@ const initialize = function () {
 	currScore = 0;
 	zSpeed = 1;
 	alpha = false;
+
 	currScoreDisplay.textContent = currScore;
 	currScoreDisplay.style.color = 'black';
+
 	timer = setInterval(keepScore, 1);
 	setInterval(increaseDifficulty, 500);
+
+	document.querySelector('canvas').style.cursor = 'none';
+
 	animate();
 }
 
 
+// checks for collisions
 function collisionCheck(curCube){
 	var cube_bbox = new THREE.Box3();
 	cube_bbox.setFromObject( curCube );
@@ -141,6 +135,7 @@ function collisionCheck(curCube){
 
 const animate = function () {
 	
+	//hide menu, show curr score
 	menu.style.visibility = 'hidden';
 	currScoreDisplay.style.visibility = 'visible';
 	var req = requestAnimationFrame( animate );
@@ -162,8 +157,6 @@ const animate = function () {
 				camera.rotation.z += .005;
 				
 			}
-
-
 	}
 	// restraighten arrow
 	if(!arrowStraight && !leftPressed && !rightPressed){
@@ -172,7 +165,6 @@ const animate = function () {
 		}else if(arrow.rotation.y<0){
 			arrow.rotation.y += 0.020;
 		}
-
 	}
 		
 	// CUBES MOVE SIDE TO SIDE
@@ -189,15 +181,12 @@ const animate = function () {
 
 	// CAMERA TILT
 	if(leftPressed){
-
 		if(camera.rotation.z < .10){
 			camera.rotation.z += .01;
 		}
-
 		if(arrow.rotation.y<0.2){
 			arrow.rotation.y += 0.03;
 		}
-		
 		cameraStraight = false;	
 		arrowStraight = false;
 	}
@@ -205,7 +194,6 @@ const animate = function () {
 		if(camera.rotation.z > -.10){ 
 			camera.rotation.z -= .01;
 		}
-		
 		if(arrow.rotation.y>-0.2){
 			arrow.rotation.y -= 0.03;
 		}
@@ -230,8 +218,7 @@ const animate = function () {
 		}
 	}
 
-	// INVERTING COLORS
-	console.log(currScore);
+	// Dark Mode
 	if(currScore > 8000 && currScore < 16000){
 		if(!alpha){
 			scene.background = new THREE.Color( 0x000000 );
@@ -240,7 +227,6 @@ const animate = function () {
 			plane.material.color.setHex( 0x000000 );
 			alpha = true;
 		}
-
 	}
 	else{
 		if(alpha){
@@ -248,22 +234,19 @@ const animate = function () {
 			currScoreDisplay.style.color = "black";
 			plane.material.color.setHex( 0xC8C8C8 );
 			alpha = false;
-		}
-		
+		}	
 	}
 	
-
-	
 	if(gameOver){
+		document.querySelector('canvas').style.cursor = 'pointer';
 
 		scene.background = new THREE.Color( 0xffffff );
 		currScoreDisplay.style.color = "black";
 		plane.material.color.setHex( 0xC8C8C8 );
+
 		while(scene.children.length > 0){ 
 			scene.remove(scene.children[0]); 
 		}
-		
-	
 	}
 
 	renderer.render( scene, camera );
@@ -287,12 +270,13 @@ const animate = function () {
 
 document.getElementById("startGameButton").addEventListener("click", initialize);
 
+// updates the curr score with time
 function keepScore() {
 	currScore++;
 	currScoreDisplay.textContent = currScore;
-
 }
 
+// the speed at which cubes move close increases over time
 function increaseDifficulty() {
 	zSpeed += .01;
 }

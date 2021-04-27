@@ -29,12 +29,4 @@ class Cube{
         this.cube.position.z = (Math.floor(Math.random() * 30) + 25) * -1; 
         return true;;
     }
-
-    resetPositions(){
-        //random x position (-36 to 36)
-        this.cube.position.x = Math.floor(Math.random() * 72) - 36;
-
-        //random z position (-20 to -30)
-        this.cube.position.z = Math.floor(Math.random() * -30) - 25; 
-    }
 }
