@@ -8,6 +8,7 @@ var arrow;
 var currScore = 0;
 var highScore = currScore;
 var timer;
+var diff;
 var zSpeed = 1;
 var alpha = false;
 
@@ -110,7 +111,7 @@ const initialize = function () {
 	currScoreDisplay.style.color = 'black';
 
 	timer = setInterval(keepScore, 1);
-	setInterval(increaseDifficulty, 500);
+	diff = setInterval(increaseDifficulty, 500);
 
 	document.querySelector('canvas').style.cursor = 'none';
 
@@ -209,6 +210,7 @@ const animate = function () {
 		if(collisionCheck(curCube)){
 			gameOver = true;
 			clearInterval(timer);
+			clearInterval(diff);
 			break;	
 		}
 
